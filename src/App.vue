@@ -1,17 +1,50 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
+    <Calc :title="message" @result-event="appAction" />
+    <hr>
+    <div>
+      <table v-html="log"></table>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import Calc from './components/Calc'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Calc
+  },
+  data: function() {
+    return {
+      message: 'CALC',
+      result:[],
+    }
+  },
+  computed: {
+    log:function() {
+      var table = '<tr><th class="head">Expression</th><th class="head">Value</th></tr>';
+      for(var i in this.result){
+        table += '<td></td>' + this.result[i] [0] + '</td></th>' + this.result[i][1] + '</th></tr>';
+      }
+      return table;
+    }
+  },
+  created: function() {
+    var items = localStorage.getItem('log');
+    var logs = JSON.parse(items);
+    if (logs != null){this.result = logs;}
+  },
+  methods: {
+    appAction: function(exp, res) {
+      this.result.unshift([exp, res]);
+      if(this,result.length > 10) {
+        this.result.pop();
+      }
+      var log = JSON.stringify(this.result);
+      localStorage.setItem('log',log);
+    }
   }
 }
 </script>
@@ -24,5 +57,19 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+tr td {
+  padding:5px;
+  border:1px solid gray;
+}
+
+tr th {
+  padding:5px;
+  border:1px solid gray;
+}
+
+tr th.head {
+  background-color: black;
+  color: white;
 }
 </style>
